@@ -94,7 +94,6 @@ class KeyboardEmulation(*([KeyboardEmulationBase] if have_output_plugin else [])
     def send_key_combination(self, combo_string):
         key_events = parse_key_combo(combo_string)
         args = [arg for ev in key_events for arg in key_event_to_wtype_arg(ev)]
-        print(args)
         wtype(*args)
 
     def send_backspaces(self, n):
