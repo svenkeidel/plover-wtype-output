@@ -1,5 +1,6 @@
 import subprocess
 from plover.oslayer.keyboardcontrol import KeyboardEmulation as OldKeyboardEmulation
+from plover.output import Output
 from plover import log
 try:
     from plover.key_combo import parse_key_combo
@@ -20,6 +21,7 @@ class Main:
     def __init__(self, engine):
         self._engine = engine
         self._old_keyboard_emulation=None
+
     def start(self):
         if hasattr(self._engine, "_output"):
             pass
@@ -62,7 +64,7 @@ def key_event_to_wtype_arg(ev):
         flag = flag.upper()
     return ('-' + flag,  name)
 
-class KeyboardEmulation(*([KeyboardEmulationBase] if have_output_plugin else [])):
+class KeyboardEmulation(*([KeyboardEmulationBase] if have_output_plugin else [Output])):
     """Emulate keyboard events."""
 
     @classmethod
@@ -80,13 +82,13 @@ class KeyboardEmulation(*([KeyboardEmulationBase] if have_output_plugin else [])
     def cancel(self):
         pass
 
-    def set_ms(self, ms):
+    def set_key_press_delay(self, ms):
         if self._ms != ms:
             self._ms = ms
 
     def _wtype_string(self, s):
         ms = self._ms
-        wtype("--", *(["-d", ms] if ms != None else []), s)
+        wtype(*(["-d", str(ms)] if ms != None else []), "--", s)
 
     def send_string(self, s):
         self._wtype_string(s)
